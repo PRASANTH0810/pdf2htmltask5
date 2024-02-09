@@ -1,0 +1,1286 @@
+<html>
+<head>
+  <title>pdf2htmltask5</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
+  
+</head>
+<body>
+   <div class="section">
+       <div class="content-container">
+    <h2><b>Chapter II<br /></b></h2>
+    <br />
+    <h1><b>Control of Inductive Bias<br/>
+        in Supervised Learning<br/>
+        Using Evolutionary<br/>
+        Computation:<br/>
+        A Wrapper-Based<br/>
+        Approach
+        <br /></b></h1>
+    <br />
+    <p style="text-align: center;">William H. Hsu<br/>
+        Kansas State University, USA<br /></p><br/>
+
+    <h2><b>ABSTRACT<br /></b></h2>
+    <div class="p1"><i>In this chapter, I discuss the problem of feature subset selection for supervised inductive
+        learning approaches to knowledge discovery in databases (KDD), and examine this
+        and related problems in the context of controlling inductive bias. I survey several
+        combinatorial search and optimization approaches to this problem, focusing on datadriven, validation-based techniques. In particular, I present a wrapper approach that
+        uses genetic algorithms for the search component, using a validation criterion based
+        upon model accuracy and problem complexity, as the fitness measure. Next, I focus on
+        design and configuration of high-level optimization systems (wrappers) for relevance
+        determination and constructive induction, and on integrating these wrappers with
+        elicited knowledge on attribute relevance and synthesis. I then discuss the relationship
+        between this model selection criterion and those from the minimum description length
+        (MDL) family of learning criteria. I then present results on several synthetic problems</i></div>
+    
+    <p style="text-align: right;">pg.no: 01</p><br/>
+ 
+    </div>
+  </div>
+  <!-------------------next page----------------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1"><i>on task-decomposable machine learning and on two large-scale commercial datamining and decision-support projects: crop condition monitoring, and loss prediction
+            for insurance pricing. Finally, I report experiments using the Machine Learning in Java
+            (MLJ) and Data to Knowledge (D2K) Java-based visual programming systems for data
+            mining and information visualization, and several commercial and research tools. Test
+            set accuracy using a genetic wrapper is significantly higher than that of decision tree
+            inducers alone and is comparable to that of the best extant search-space based
+            wrappers.</i></div>
+
+            <b><h2>INTRODUCTION</h2></b>
+            <p>This chapter introduces the problems for change of representation (Benjamin, 1990)
+                in supervised inductive learning. I address the focal problem of inductive learning in data
+                mining and present a multi-strategy framework for automatically improving the representation of learning problems. This framework incorporates methodological aspects of
+                <i>feature subset selection and feature (attribute) partitioning, automated problem
+                decomposition, and model selection. </i>The focus is on wrapper-based methods as
+                studied in recent and continuing research.</p>
+            <p>As an example, I present a new metric-based model selection approach (composite
+                learning) for decomposable learning tasks. The type of data for which this approach is
+                best suited is heterogeneous, time series data – that arising from multiple sources of data
+                (as in sensor fusion or multimodal human-computer interaction tasks, for example). The
+                rationale for applying multi-strategy learning to such data is that, by systematic analysis
+                and transformation of learning tasks, both the efficiency and accuracy of classifier
+                learning may be improved for certain time series problems. Such problems are referred
+                to in this chapter as<i> decomposable</i>; the methods addressed are: task decomposition and
+                subproblem definition, quantitative model selection, and construction of hierarchical
+                mixture models for data fusion. This chapter presents an integrated, multi-strategy
+                system for decomposition of time series classifier learning tasks.</p>
+            <p>A typical application for such a system is learning to predict and classify hazardous
+                and potentially catastrophic conditions. This prediction task is also known as crisis
+                monitoring, a form of pattern recognition that is useful in decision support or recommender
+                systems (Resnick & Varian, 1997) for many time-critical applications. Examples of crisis
+                monitoring problems in the industrial, military, agricultural, and environmental sciences
+                are numerous. They include: crisis control automation (Hsu et al., 1998), online medical
+                diagnosis (Hayes-Roth et al., 1996), simulation-based training and critiquing for crisis
+                management (Gaba et al., 1992; Grois, Hsu, Voloshin, & Wilkins et al., 1998), and
+                intelligent data visualization for <i>real-time decision-making </i>(Horvitz & Barry, 1995).</p>
+
+            <b><h3>Motivation: Control of Inductive Bias</h3></b>
+            <p>The broad objectives of the approach I present here are to increase the robustness
+                of inductive machine learning algorithms and develop learning systems that can be
+                automatically tuned to meet the requirements of a knowledge discovery (KD) performance 
+                element. When developers of learning systems can map a KD application to a set</p>
+
+        <p style="text-align: right;">pg.no: 02</p><br/>
+    </div>
+  </div>
+  <!-----------------------next page-------------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">of automatic higher-order parameter-turning problems, the reuse of design and code
+            embodied by this generalization over traditional learning can reduce development costs.
+            When addressing KD problems in computational science and engineering, the time
+            required to develop an effective representation and to tune these hyperparameters using
+            training and validation data sets can be a significant fraction of the development time of
+            the KD system, exceeding the time required to apply traditional learning algorithms with
+            fixed hyperparameters and bias parameters. This setting introduces new flexibility and
+            complexity into the learning problem and may extend the expected useful lifetime of the
+            system. For example, if the learning component is made more adaptable through
+            automated performance tuning, then the overall system, not merely the learning algorithms
+             it uses, may last longer than one tailored to a specific data set or problem domain.
+            Thus it becomes subject to traditional maintenance and evolution. On the other hand,
+            performance tuning may reduce the development time of highly specialized KD systems
+            as well, by identifying and constructing relevant variables. In this case, reducing the cost
+            of developing the more limited-use software can, in turn, significantly reduce that of
+            solving the intended scientific or engineering problem. In many real-world KD applications, 
+            it is preferable to automatically tune some but not all of the available bias
+            parameters to prevent overfitting of training data. This is because the computational time
+            savings for the performance element (e.g., prediction, classification, or pattern detection
+            function) and marginal gains in solution quality (e.g., utility or accuracy) do not make it
+            worthwhile to fine-tune some bias parameters that are less significant for the learning
+            problem. A significant component of development costs is related to reducing wasted
+            development time and computation time by making the entire programming systems
+            product (Brooks, 1995) responsive and adaptable to end-user needs. Combinatorial
+            search and statistical validation over representations, visualization of the models and
+            their relation to quantitative inductive bias (Benjamin, 1990; Mitchell, 1997), and highlevel 
+            user interfaces for KD can be applied to achieve these goals.</div>
+            <p>A major motivation for the automation of problem transformation is transparency.
+                The end user of a KD system is often a specialist in scientific, engineering, or businessrelated technical fields other than intelligent systems and machine learning. He or she
+                knows the requirements of the application in terms of the performance element, an
+                analytical function that can: predict the continuation of a historical time series; detect
+                anomalous conditions in a time annotated episodic log; classify, diagnose, or explain set
+                of database records; make a recommendation for a business or medical decision; or
+                generate a plan, schedule, or design. These predictors, anomaly detectors, classifiers,
+                diagnostic and recommender systems, policies, and other problem solvers have their own
+                performance measures, perhaps including real-time requirements, which in turn dictate
+                those of the learning system. This suggests that more robust KD may be achieved by
+                letting the end user specify requirements pertaining to the performance element and
+                automatically generating specifications for the desired representation and higher-order
+                parameters to be tuned. In this way, the improvement of problem representation by
+                automated transformation can be driven by users’ specified time and resource constraints.</p>
+                <p>The research covered in this chapter focuses on demonstrating, through development of a learning enhancement framework and through empirical evaluation, that these
+                    broad objectives can be achieved for a wide variety of real-world KD applications. This
+                    research thrust has two main objectives: assessing the breadth of applicability of</p>
+
+        <p style="text-align: right;">pg.no: 03</p><br/>
+    </div>
+  </div>
+  <!------------------------next page---------------------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">automatic transformation of learning problems by training the resultant models and
+            applying them to large-scale KD problems over real-world data sets, and developing
+            information visualization techniques to help users understand this process of improving
+            problem representations.</div></br/>
+        
+            <b><h3>Attribute-Driven Problem Decomposition: Subset<br/>
+                Selection and Partition Search</h3></b>
+
+        <p>Many techniques have been studied for decomposing learning tasks, to obtain
+            more tractable subproblems, and to apply multiple models for reduced variance. This
+            section examines <i>attribute-based </i>approaches for problem reformulation, especially
+            <i>partitioning </i>of input attributes in order to define <i>intermediate concepts</i> (Fu & Buchanan,
+            1985) in problem decomposition. This mechanism produces multiple subproblems for
+            which appropriate models must be selected; the trained models can then be combined
+            using<i> classifier fusion </i>models adapted from bagging (Breiman, 1996), boosting (Freund
+            & Schapire, 1996), stacking (Wolpert, 1992), and hierarchical mixture models (Jordan &
+            Jacobs, 1994).</p>
+        <p>One of the approaches we shall examine in this chapter uses partitioning to
+           <i> decompose </i>a learning task into parts that are individually useful (using <i>aggregation</i> as
+            described in the background section of this chapter), rather than to <i>reduce</i> attributes to
+            a single useful group. This permits new intermediate concepts to be formed by
+            unsupervised learning methods such as conceptual clustering (Michalski & Stepp, 1983)
+            or cluster formation using self-organizing algorithms (Kohonen, 1990; Hsu et al., 2002).
+            The newly defined problem or problems can then be mapped to one or more appropriate
+            hypothesis languages (model specifications). In our new system, the subproblem
+            definitions obtained by partitioning of attributes also specify a mixture estimation
+            problem (i.e., data fusion step occurs after training of the models for all the subproblems).</p>
+
+        <b><h3>Subproblem Definition</h3></b>
+        <p>The purpose of attribute partitioning is to define intermediate concepts and subtasks of
+             decomposable time series learning tasks, which can be mapped to the appropriate submodels.
+              In both attribute subset selection and partitioning, attributes are grouped into subsets 
+              that are relevant to a particular task: the overall learning task or a subtask. Each subtask 
+              for a partitioned attribute set has its own inputs (the attribute subset) and its own intermediate 
+              concept. This intermediate concept can be discovered using unsupervised learning methods,
+               such as <i>self-organizing feature maps</i> (<i>Kohonen</i>, 1990; <i>Hsu</i> et al., 2002)
+                and <i>k-means clustering</i> (<i>Duda</i> et al., 2000). Other methods, such as competitive 
+                clustering or vector quantization using radial basis functions (<i>Haykin</i>, 1999),
+                 <i>neural trees</i> (<i>Li</i> et al., 1993), and similar models (<i>Ray</i> & <i>Hsu</i>,
+                  1998; <i>Duda</i> et al., 2000), <i>principal components analysis</i> (<i>Watanabe</i>, 1985;
+                   <i>Haykin</i>, 1999), <i>Karhunen-Loève transforms</i> (<i>Watanabe</i>, 1985), or <i>factor 
+                    analysis</i> (<i>Watanabe</i>, 1985), can also be used.</p>
+            <p>Attribute partitioning is used to control the formation of intermediate concepts in
+                this system. Whereas attribute subset selection yields a single, reformulated learning
+                problem (whose intermediate concept is neither necessarily nor intentionally different</p>
+
+
+        <p style="text-align: right;">pg.no: 04</p><br/>
+    </div>
+  </div>
+  <!----------------------next page----------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">from the original concept), attribute partitioning yields<i> multiple learning subproblems</i>
+            (whose intermediate concepts may or may not differ, but are simpler by design when they
+            do). The goal of this approach is to find a natural and principled way to specify how
+            intermediate concepts should be simpler than the overall concept.</div><br/>
+        <b><h3>Metric-Based Model Selection and Composite<br/>
+            Learning</h3></b>
+            <p>Model selection is the problem of choosing a hypothesis class that has the appropriate complexity 
+                for the given training data (<i>Stone</i>, 1977; <i>Schuurmans</i>, 1997). Quantitative methods
+                 for model selection have previously been used to learn using highly flexible nonparametric models
+                  with many degrees of freedom, but with no particular assumptions on the structure of decision 
+                  surfaces.</p>
+            <p>The ability to decompose a learning task into simpler subproblems prefigures a need to map these 
+                subproblems to the appropriate models. The general mapping problem, broadly termed model selection,
+                 can be addressed at very minute to very coarse levels. This chapter examines quantitative,
+                  metric-based approaches for model selection at a coarse level. This approach is a direct 
+                  extension of the problem definition and technique selection process (<i>Engels</i> et al., 1998). 
+                  We will henceforth use the term model selection to refer to both traditional model selection and 
+                  the metric-based methods for technique selection as presented here. We begin with background on
+                   the general framework of inductive bias control and then survey time series learning 
+                   architectures, their representation biases (<i>Witten</i> & <i>Frank</i>, 2000), and methods
+                    for selecting them from a collection of model components.</p>
+<b><h3 style="text-align: center;">BACKGROUND</h3></b>
+<b><h3>Key Problem: Automated Control of Inductive Bias</h3></b>
+
+<p>We first focus on development of a new learning system for spatiotemporal <i>KD</i>. The <i>KD</i> performance 
+    element in this problem is not just analytical but includes decision support through model visualization and 
+    anomaly detection.</p>
+<p>The problems we face are threefold and are surveyed in the above sections on current and related work. First,
+     we must address relevance determination to determine what sensor data channels are useful for a particular 
+     <i>KD</i> objective and data set. This problem is related to the so-called curse of dimensionality wherein 
+     an overabundance of input variables makes it difficult to learn the prediction, classification, or pattern
+      recognition element. Second, the task of identifying hyperparameters of the <i>KD</i> system is subject to 
+      deceptivity and instability because bias optimization in general introduces a new level of combinatorial 
+      complexity to the problem of inductive learning. Third, the very large spatiotemporal databases we are
+       dealing with are highly heterogeneous, arising from many disparate sources such as global positioning
+        systems (GPS), surveying, sensors such as radar, and historical databases; this heterogeneity presents 
+        the advantage of type information that can help constrain dimensionality but also aggravates</p>
+
+        <p style="text-align: right;">pg.no: 05</p><br/>
+    </div>
+  </div>
+  <!--------------------------next page-------------------------------------------------------------------->
+
+  <div class="section">
+    <div class="content-container">
+        <div class="p1"><i>Figure 1: A composite learning framework.</i></div><br/><br/>
+        
+        <img src="images/page%206%20image1.jpg" style="height: 50%"><br/><br/>
+
+        <!------------------page 6 image 1---------------->
+
+        <div class="p1">vates the problem of relevance determination because including irrelevant sensors can
+            lead to severe inefficiencies in data acquisition, interpretation of visual results, and the
+            learning component.</div>
+
+            <p>In Hsu, Ray, and Wilkins et al. (2000), we address these problems through a framework called
+                 composite learning that is depicted in Figure 1. We define a composite learning system to be
+                  a committee machine (<i>Haykin</i>, 1999) designed to improve the performance of a collection
+                   of supervised inductive learning algorithms with specific parameters for representation and
+                    preference bias (<i>Mitchell</i>, 1997), over multivariate – possibly heterogeneous – data. 
+                    The open research problem I discuss is how composite learning systems can be applied to 
+                    automatically improve representations of complex learning problems.</p>
+            <p>Composite learning provides a search-based and validation-based procedure for controlling the
+                 inductive bias, specifically the total problem specification, of systems for learning from
+                  decomposable, multi-attribute data sets. The central elements of this system are: decomposition 
+                  of input, metric-based model selection, and a mixture model for integration of multiple submodels.
+                   In recent research, I applied composite learning to audio signal classification (<i>Ray</i> & 
+                   <i>Hsu</i>, 1998) and crop condition prediction, the central component of a monitoring problem 
+                   (<i>Hsu</i>, 1998; <i>Hsu</i> et al., 2000). Given a specification for decomposed – i.e., 
+                   selected or partitioned – subsets of input variables, new intermediate concepts <b>&#563;<sub>1</sub></b> can be formed
+                    by unsupervised learning. For this step we have used Gaussian radial-basis functions or RBFs
+                     (<i>Ray</i> & <i>Hsu</i>, 1998) and self-organizing maps (<i>Kohonen</i>, 1990). The newly 
+                     defined problem or problems can then be mapped to one or more appropriate hypothesis languages
+                      (model specifications). We have developed a high-level algorithm for tuning explicit
+                      parameters that control representation and preference bias, to generate this specification of
+                       a composite. This algorithm is used by <i>Hsu</i> et al., (2000) to select components for a hierarchical
+                        mixture network (specialist-moderator network) and train them for multi-strategy learning. A data fusion
+                         step occurs after individual training of each model. The system incorporates attribute</p>
+
+        <p style="text-align: right;">pg.no: 06</p><br/>
+    </div>
+  </div>
+  <!--------------------next page---------------------------------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">partitioning into constructive induction to obtain multiple problem definitions 
+            (decomposition of learning tasks); applies metric-based model selection over subtasks to <i>search
+            for efficient hypothesis preferences</i>; and integrates these techniques in a data fusion
+            (mixture estimation) framework.</div>
+
+            <p>The metrics we have derived for controlling preference bias in hierarchical mixture models
+                 are positively correlated with learning performance by a particular learning method (for 
+                 a learning problem defined on a particular partitioning of a time series). This makes them 
+                 approximate indicators of the suitability of the corresponding mixture model and the assumption 
+                 that the learning problem adheres to its characteristics (with respect to interaction among 
+                 subproblems). Thus, preference bias metrics may be used for partial model selection.</p>
+    
+    <p>Although this approach has yielded positive results from applying composite learning to KD, the breadth 
+        of domains for which this framework has been tested is still limited. A STETchallenge and opportunity is
+         the application of composite learning to learning problems in precision agriculture, specifically the 
+         illustrative example in and the problem of soil fertility mapping, which generates a map of quantitative
+          fertility estimates from remotely sensed, hydrological, meteorological, wind erosion, and pedological
+           data. One purpose of generating such maps is to control variable-rate fertilizer application to increase
+            yield with minimal environmental impact. Test bed for heterogeneous data mining abound in the 
+            literature and are becoming freely available.</p>
+    
+    <p>In past and current research, we have achieved empirical improvement in constructive induction 
+        in several ways in which we propose to further generalize and systematically validate. First, 
+        we found that decomposition of learning tasks using techniques such as attribute partitioning 
+        or ensemble selection can help reduce variance when computational resources are limited. We 
+        conjecture that this may be useful in domains such as real-time intelligent systems, where
+         deadlines are imposed on training and inference time.</p>
+    
+    <p>Current techniques such as automated relevance determination, feature selection, and clustering
+         tend to address the problem of constructive induction in isolated stages rather than as an integrative 
+         mechanism for transforming the data – input and output schemata – into a more tractable and efficient 
+         form. As outlined in the previous section, we address this by combining search-based combinatorial
+          optimization, statistical validation, and hierarchical abstraction into the coherent framework of 
+          <i>composite learning</i>.</p>
+    
+    <p>Furthermore, many complex KDD problems can be decomposed on the basis of spatial, temporal, 
+        logical, and functional organization in their performance element. Techniques such as model
+         selection and ensemble learning have been used to systematically identify and break down these
+          problems, and, given a specification of a modular learning system, hierarchical mixture estimation
+           techniques have been used to build pattern recognition models by parts and integrate them. The challenge 
+           is how to isolate prediction or classification models. The author has identified several low-order 
+           Box-Jenkins (autoregressive integrated moving average, also known as ARMA or ARIMA) process models 
+           (Box et al., 1994) that can be isolated from heterogeneous historical data, based on quantitative
+            metrics (<i>Hsu</i>, 1998). Composite learning can be applied to derive a complete committee machine 
+            specification from data to learn intermediate predictors (e.g., temporal artificial neural networks
+             such as simple recurrent networks and time-delay neural networks). We believe that this approach can
+              discover other hierarchical</p>
+
+        <p style="text-align: right;">pg.no: 07</p><br/>
+    </div>
+  </div>
+  <!--------------------------next page---------------------------------------------------------------------------->
+
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">organization such as embedded clusters (Hsu et al., 2002), factorial structure (Ray & Hsu,
+            1998), and useful behavioral structure, which we shall outline in the next section on
+            evolutionary computation for KD. The proposed research is therefore not specific to time
+            series.</div>
+        <p>The line of research that we have described in this section shall lead to the
+            development of techniques for making inductive learning more robust by controlling
+            inductive bias to increase generalization accuracy. We propose to use my framework,
+            composite learning, for specifying high-level characteristics of the problem representation to be tuned in a systematic way. The next section presents a specific combinatorial
+            optimization technique for tuning these hyperparameters using validation and other
+            criteria</p>
+
+        <b><h3>Evolutionary Computation Wrappers for Enhanced
+            KD</h3></b>
+            <p>Over the past three years, we have been engaged in the development of a novel system for 
+                combinatorial optimization in KD from complex domains, which uses evolutionary computation –
+                 genetic algorithms (GA) and genetic programming (GP) – to enhance the machine learning process.
+                  Mechanisms for KD enhancement that use the empirical performance of a learning function as 
+                  feedback are referred to in the intelligent systems literature as <i>wrappers</i> 
+                  (<i>Kohavi</i> & <i>John</i>, 1997). Our objective at this stage of the research is
+                   to relax assumptions we have previously made regarding two aspects of automatically 
+                   improving the representation of learning problems. First, we seek to generalize the structure 
+                   of the mapping between the original and improved representations, not restricting it merely to 
+                   feature selection or construction. Second, we seek to design a framework for automatic discovery
+                    of hierarchical structure in learning problems, both from data and from reinforcements in 
+                    problem-solving environments. The key contribution of this component of the research is to make
+                     the automatic search for representations more systematic and reproducible by putting it into
+                      an engineering framework.</p>
+
+            <b><h3>Problems: Attribute Subset Selection and Partitioning</h3></b>
+            <p>This section introduces the <i>attribute partitioning </i>problem and a method for
+                subproblem definition in multi-attribute inductive learning.</p>
+
+        <b><h3>Attribute-Driven Problem Decomposition for<br/>
+            Composite Learning</h3></b>
+            <p>Many techniques have been studied for decomposing learning tasks to obtain more
+                tractable subproblems and to apply multiple models for reduced variance. This section
+                examines <i>attribute-based</i> approaches for problem reformulation, which start with restriction of the set of input attributes on which the supervised learning algorithms will focus.
+                First, this chapter presents a new approach to problem decomposition that is based on
+                finding a good <i>partitioning</i> of input attributes. Previous research on attribute subset</p>
+        
+        
+        <p style="text-align: right;">pg.no: 08</p><br/>
+    </div>
+  </div>
+  <!----------------------next page-------------------------------------------------------------------------------->
+
+  <div class="section">
+    <div class="content-container">
+    
+<div class="p1">selection (Kohavi & John, 1997), is highly relevant ,though directed toward a different
+    goal for problem reformulation; this section outlines differences between subset selection and partitioning and how partitioning may be applied to task decomposition.
+    Second, this chapter compares top-down, bottom-up, and hybrid approaches for attribute partitioning, and considers the role of partitioning in feature extraction from
+    heterogeneous time series. Third, it discusses how grouping of input attributes leads
+    naturally to the problem of forming <i>intermediate concepts </i>in problem decomposition.
+    This mechanism defines different subproblems for which appropriate models must be
+    selected; the trained models can then be combined using <i>classifier fusion </i>models
+    adapted from bagging (Breiman, 1996), boosting (Freund & Schapire, 1996), stacking
+    (Wolpert, 1992), and hierarchical mixture models (Jordan & Jacobs, 1994).</div><br/>
+
+    <b><h3>Overview of Attribute-Driven Decomposition</h3></b>
+
+<p>Figure 2 depicts two alternative systems for attribute-driven reformulation of
+    learning tasks (Benjamin, 1990; Donoho, 1996). The left-hand side, shown with dotted
+    lines, is based on the traditional method of attribute <i>subset selection </i>(Kohavi & John,
+    1997). The right-hand side, shown with solid lines, is based on attribute <i>partitioning</i>,
+    which is adapted in this chapter to decomposition of time series learning tasks. Given
+    a specification for reformulated (reduced or partitioned) input, new intermediate concepts can be formed by unsupervised learning (e.g., conceptual clustering); the newly
+    defined problem or problems can then be mapped to one or more appropriate hypothesis
+    languages (model specifications). The new models are selected for a reduced problem
+    or for multiple subproblems obtained by partitioning of attributes; in the latter case, a
+    data fusion step occurs after individual training of each model.</p>
+
+
+    <div class="p1">Figure 2: Systems for attribute-driven unsupervised learning and model selection.</div><br/><br/>
+        <img src="images/page%209%20image1.jpg" style="height: 50%; width: 70%"><br/><br/>
+        
+
+    <!--------------------------page 9 image 1------------------->
+
+        <p style="text-align: right;">pg.no: 09</p><br/>
+    </div>
+  </div>
+  <!----------------------next page-------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+<b><h3>Subset Selection and Partitioning</h3></b>
+<p>
+    <i>Attribute subset selection</i>, also called <i>feature subset selection</i>, is the task of
+focusing a learning algorithm’s attention on some subset of the given input attributes,
+while ignoring the rest (Kohavi & John, 1997). In this research, subset selection is
+adapted to the systematic decomposition of learning problems over heterogeneous time
+series. Instead of focusing a single algorithm on a single subset, the set of all input
+attributes is partitioned, and a specialized algorithm is focused on each subset. While
+subset selection is designed for refinement of attribute sets for single-model learning,
+attribute partitioning is designed specifically for multiple-model learning. This new
+approach adopts the role of feature construction in constructive induction (Michalski,
+1983; Donoho, 1996), as depicted in Figure 2. It uses subset partitioning to <i>decompose</i>
+a learning task into parts that are individually useful, rather than to reduce attributes to
+a single useful group. This permits multiple-model methods such as bagging (Breiman,
+1996),<i> boosting</i> (Freund & Schapire, 1996), and <i>hierarchical mixture models </i>(Jordan &
+Jacobs, 1994) to be adapted to multi-strategy learning.
+</p>
+<b><h3>Partition Search</h3></b>
+
+<p>For clarity, I review the basic combinatorial problem of attribute partitioning. First,
+    consider that the state space for attribute subset selection grows exponentially in the
+    number of attributes n: its size is simply 2<sup>n</sup>. The size of the state space for n attributes is B<sub>n</sub>
+    , the nth Bell number, defined as follows<sup>1</sup> :
+    </p>
+        <img src="images/page%2010%20formula%201.jpg" style="height: 25%; width:70%;"><br/><br/>
+<!--------------page 10 formula 1------------------->
+
+<p>Thus, it is impractical to search the space exhaustively, even for moderate values of <i>n</i>. The 
+    function <i>B<sub>n</sub></i> is ω(2<sup>n</sup>) and o(n!), i.e., its asymptotic growth is strictly
+     faster than that of 2<sup>n</sup> and strictly slower than that of <i>n</i>!. It thus results in a 
+     highly intractable evaluation problem if all partitions are considered. Instead, a heuristic evaluation 
+     function is used so that informed search methods (<i>Russell</i> & <i>Norvig</i>, 1995) may be applied.
+      This evaluation function is identical to the one used to prescribe the multi-strategy hierarchical
+       mixture of experts (MS-HME) model; therefore, its definition is deferred until the next section.</p>
+<p>The state space for a set of five attributes consists of 52 possible partitions. We shall 
+    examine a simple synthetic learning problem, modular parity, that can be used to test search algorithms 
+    for the optimum partition. As the parity problem, a generalization of XOR to many variables, demonstrates 
+    the expressiveness of a representation for models or hypotheses in inductive learning (and was thus used to 
+    illustrate the</p>
+
+
+
+        <p style="text-align: right;">pg.no: 10</p><br/>
+    </div>
+  </div>
+  <!------------------next page------------------------------------------------------------------>
+  <div class="section">
+    <div class="content-container">
+<div class="p1">limitations of the perceptron), the modular parity problem tests the expressiveness and
+    flexibility of a learning system when dealing with heterogeneous data.</div><br/>
+    <b><h3>Subproblem Definition</h3></b>
+
+<p>This section summarizes the role of attribute partitioning in defining intermediate
+    concepts and subtasks of decomposable time series learning tasks, which can be mapped
+    to the appropriate submodels.</p>
+
+<b><h3>Intermediate Concepts and Attribute-Driven<br/>
+    Decomposition</h3></b>
+
+    <p>In both attribute subset selection and partitioning, attributes are grouped into subsets 
+        that are relevant to a particular task: the overall learning task or a subtask. Each subtask 
+        for a partitioned attribute set has its own inputs (the attribute subset) and its own intermediate
+         concept. This intermediate concept can be discovered using unsupervised learning algorithms, such 
+         as k-means clustering. Other methods, such as competitive clustering or vector quantization (using 
+         radial basis functions (<i>Lowe</i>, 1995; <i>Hassoun</i>, 1995; <i>Haykin</i>, 1999), neural trees 
+         (<i>Li</i> et al., 1993), and similar models (<i>Duda</i> et al., 2000; <i>Ray</i> & <i>Hsu</i>, 1998),
+          principal components analysis (<i>Watanabe</i>, 1985; <i>Hassoun</i>, 1995; <i>Haykin</i>, 1999),
+           Karhunen-Loève transforms (<i>Watanabe</i>, 1985, <i>Hassoun</i>, 1995), or factor analysis 
+           (<i>Watanabe</i>, 1985; <i>Duda</i> et al., 2000), can also be used.</p>
+    
+    <p>Attribute partitioning is used to control the formation of intermediate concepts in this system. 
+        Attribute subset selection yields a single, reformulated learning problem (whose intermediate concept 
+        is neither necessarily different from the original concept, nor intended to differ). By contrast, 
+        attribute partitioning yields multiple learning subproblems (whose intermediate concepts may or may 
+        not differ, but are simpler by design when they do differ).</p>
+    
+    <p>The goal of this approach is to find a natural and principled way to specify how intermediate 
+        concepts should be simpler than the overall concept. In the next section, two mixture models are 
+        presented: the <i><b>H</b>ierarchical <b>M</b>ixture of <b>E</b>xperts</i> (HME) of <i>Jordan</i> and <i>Jacobs</i> (1994), and 
+        the <i><b>S</b>pecialist-<b>M</b>oderator</i> (SM) network of <i>Ray</i> and <i>Hsu</i> (<i>Ray</i> & <i>Hsu</i>, 1998; 
+        <i>Hsu</i> et al., 2000). The following sections explain and illustrate why this design choice is 
+        a critically important consideration in how a hierarchical learning model is built, and how it affects
+         the performance of multi-strategy approaches to learning from heterogeneous time series. The mechanisms 
+         by which HME and SM networks perform data fusion, and how this process is affected by attribute 
+         partitioning, are examined in both theoretical and experimental terms in this chapter. Finally, 
+         a survey of experiments by the author investigates the empirical effects of attribute partitioning
+          on learning performance, including its indirect effects through intermediate concept formation.</p>
+
+          <b><h3>Role of Attribute Partitioning in Model Selection</h3></b>
+          <p><i>Model selection</i>, the process of choosing a hypothesis class that has the appropriate complexity 
+            for the given training data (Geman et al., 1992; Schuurmans, 1997), is</p>
+
+
+        <p style="text-align: right;">pg.no: 11</p><br/>
+    </div>
+  </div>
+  <!-------------------------------next page------------------------------------------------------------------>
+
+  <div class="section">
+    <div class="content-container">
+    
+        <div class="p1">a consequent of attribute-driven problem decomposition. It is also one of the original
+            directives for performing decomposition (i.e., to apply the appropriate learning algorithm
+            to each homogeneous subtask). Attribute partitioning is a determinant of subtasks,
+            because it specifies new (restricted) views of the input and new target outputs for each
+            model. Thus, it also determines, indirectly, what models are called for. This system
+            organization may be described as a <i>wrapper system cf</i>. (Kohavi & John, 1997) whose
+            primary adjustable parameter is the attribute partition. A second parameter is a high-level
+            model descriptor (the architecture and type of hierarchical <i> classifier fusion</i>  model).
+        </div><br/><br/>
+        <b><h3>Machine Learning Methodologies: Models and<br/>
+            Algorithms</h3></b>
+        <i><h3>Recurrent Neural Networks and Statistical Time Series Models</h3></i>
+
+        <p>
+            SRNs, TDNNs, and gamma networks (Mehrotra et al., 1997) are all temporal varieties
+of artificial neural networks (ANNs). A <i>temporal naïve Bayesian network</i>is a restricted
+type of Bayesian network called a<i> global knowledge</i> map as defined by Heckerman
+(1991), which has two stipulations. The first is that some random variables may be
+temporal (e.g., they may denote the durations or rates of change of original variables).
+The second is that the topological structure of the Bayesian network is learned by naïve
+Bayes. A hidden Markov model (HMM) is a stochastic state transition diagram whose
+transitions are also annotated with probability distributions over output symbols (Lee,
+1989).</p>
+
+<p>The primary criterion used to characterize a stochastic process in my multi-strategy
+    time series learning system is its <i>memory form</i>. To determine the memory form for temporal
+    ANNs, two properties of statistical time series models are exploited. The first property
+    is that the temporal pattern represented by a memory form can be described as a
+    <i>convolutional code</i>. That is, past values of a time series are stored by a particular type
+    of recurrent ANN, which transforms the original data into its internal representation. This
+    transformation can be formally defined in terms of a <i>kernel function</i> that is convolved
+    over the time series. This convolutional or functional definition is important because it
+    yields a general mathematical characterization for individually weighted “windows” of
+    past values (time delay or <i>resolution</i>) and nonlinear memories that “fade” smoothly
+    (attenuated decay, or<i> depth</i>) (Mozer, 1994; Principé & Lefebvre, 2001; Principé & deVries,
+    1992). It is also important to metric-based model selection, because it concretely
+    describes the transformed time series that we should evaluatein order to compare memory
+    forms and choose the most effective one. The second property is that a transformed time
+    series can be evaluated by measuring the change in <i>conditional entropy</i> (Cover &
+    Thomas, 1991) for the stochastic process of which the training data is a sample. The
+    entropy of the next value conditioned on past values of the <i>original </i>data should, in
+    general, be higher than that of the next value conditioned on past values of the
+    <i>transformed</i> data. This indicates that the memory form yields an improvement in
+    predictive capability, which is ideally proportional to the expected performance of the
+    model being evaluated.</p>
+
+<p>
+    Given an input sequence x(t) with components {xˆ<sub>i</sub>(t) ,1≤ i ≤ n}  , its convolution xˆ<sub>i</sub>(t)
+with a kernel function c<sub>i</sub>(t) (specific to the i<sup>th</sup> component of the model) is defined as follows:
+</p>
+
+        <p style="text-align: right;">pg.no: 12</p><br/>
+    </div>
+  </div>
+
+  <!-------------------------next page-------------------------------------------------------------->
+
+  
+  <div class="section">
+    <div class="content-container"><br/>
+
+<img src="images/page%2013%20formula%201.jpg" style="height: 15%">
+        <!----------------page 13 formula 1------------------------------------->
+        <p>(Each <b>x</b> or <b>x</b><sub>i</sub> value contains all the attributes in one subset of a partition.)</p>
+
+        <p>Kernel functions for simple recurrent networks, Gamma memories, and are presented
+            in the context of convolutional codes and time series learning by Mozer (1994), Mehrotra
+            et al. (1997), and Hsu (1998). The interested reader may also refer to data sets such as
+            the Santa Fe corpus (Gershenfeld & Weigend, 1994) and ANN simulation software for
+            additional information; readers new to this family of learning models are encouraged to
+            experiment with such test corpora and codes in order to gain basic experience.</p>
+
+            <b><h3>Evolutionary Computation: Genetic Algorithms and<br/>
+                Genetic Programming</h3></b>
+
+                <p>The notion of using evolutionary computation to improve the representation of learning problems in KD draws from foundational work on controlling genetic algorithms and finds applications in evolutionary control and data mining using genetic algorithms as inducers.</p>
+                <p>In the field of evolutionary computation, many aspects of the genetic coding and evolutionary system can be tuned automatically. Much of the recent research has focused on this meta-optimization problem and has led to both theoretical and empirical results on population sizing (Horn, 1997), probability of selection, crossover, and mutation (Goldberg, 1998), and parallel, distributed load balancing in genetic algorithms (Cantu-Paz, 1999). Genetic algorithms that tune some of their own hyperparameters are referred to in the literature as parameterless (Harik & Lobo, 1997). This idea has also been used to develop genetic wrappers for performance enhancement in KD, an innovation dating back to the first applications of genetic algorithms to inductive learning (Booker, Goldberg, & Holland, 1989; Dejong et al., 1993; Goldberg, 1989).</p>
+                <p>We seek to optimize the representation and preference biases of a learning system for KD. Therefore, we are interested in four kinds of hyperparameter: input descriptors, output descriptors, specifications for what kind of committee machine or ensemble architecture to use, and control variables for the search algorithm (the choice of search algorithm itself, heuristic coefficients, and hyperparameters in various learning frameworks). The first three kinds of hyperparameter control are representation bias, the fourth, preference bias. (Witten & Frank, 2000) This distinction is important in our study of evolutionary computation because it generates requirements for coding and fitness evaluation in our specification of combinatorial optimization problems. For example, finding intermediate learning targets can be formulated as an unsupervised learning problem, and the gene expression of an evolved selector, partition, or construction rule or program for describing these target outputs shall differ from that for inputs.</p>
+                <p>Koza (1992) defines five specification components for a GP system: determining the terminal set, function set, fitness cases or evaluation function, termination conditions, and result. The process of determining these drives the design of a GP-based wrapper. In data mining with evolutionary algorithms, many direct approaches have been made.</p>
+            
+        <p style="text-align: right;">pg.no: 13</p><br/>
+    </div>
+  </div>
+<!------------------------------------------next page----------------------------------------------------------------------->
+
+<div class="section">
+    <div class="content-container">
+
+        <div class="p1">Toward constructive induction; selecting and extracting features is very natural with a genetic algorithm because the hyperparameters (e.g., feature subsets) can be encoded as bit strings and, provided the proper parallel and distributed computing system is used, the task of evaluating fitness based upon model criteria and statistical validation data is trivially parallelizable. Similarly, with the proper encoding of synthetic variables as symbolic (e.g., logical or arithmetic) expressions over the original ground variables, GP is well suited to performing feature construction by combinatorial optimization.</div>
+<p>There is an extensive but diffuse literature on hierarchical learning (especially in areas of biologically inspired computing where it is studied in contexts of neural modularity and hierarchy; niching, speciation, and demes) and artificial societies. In contrast, the concept of divide-and-conquer algorithms is pervasively and thoroughly studied. This line of research aims toward raising the understanding of layered learning in soft computing to such a level, particularly for evolutionary computation in KD and reinforcement learning over large spatial and temporal databases.</p>
+
+<b><h2>METHODOLOGIES</h2></b>
+<b><h3>Metric-Based Model Selection in Time Series
+    Learning</h3></b>
+    <p>For time series, we are interested in actually identifying a stochastic process from the training data (i.e., a process that generates the observations). The performance element, time series classification, will then apply a model of this process to a continuation of the input (i.e., “test” data) to generate predictions. The question addressed in this section is: “To what degree does the training data (or a restriction of that data to a subset of attributes) probabilistically match a prototype of some known stochastic process?” This is the purpose of metric-based model selection— to estimate the degree of match between a subset of the observed data and a known prototype. Prototypes, in this framework, are memory forms (<i>Mozer</i>, 1994), and manifest as embedded patterns generated by the stochastic process that the memory form describes. For example, an exponential trace memory form can express certain types of MA(1) processes. The kernel function for this process is given in <i>Hsu</i> (1998). The more precisely a time series can be described in terms of exponential processes (wherein future values depend on exponential growth or decay of previous values), the more strongly it will match this memory form. The stronger this match, the better the expected performance of an MA(1) learning model, such as an input recurrent (IR) network. Therefore, a metric that measures this degree of match on an arbitrary time series is a useful predictor of IR network performance.</p>
+
+<b><h3>Control of Representation Bias: A Time-Series<br/>
+    Learning Example</h3></b>
+    <p>Table 1 lists five learning representations, each exemplifying a type of representation or restriction bias for inductive learning from time series, and the metrics corresponding to their strengths. These are referred to as representation metrics because, as
+        documented in the first section (see Figure 1), the choice of representation is local to each</p>
+
+
+        <p style="text-align: right;">pg.no: 14</p><br/>
+    </div>
+  </div>
+  <!--------------------------------------next page------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <div class="p1">Table 1: Five time series representations and their prescriptive metrics</div><br/>
+
+        <table border="1" >
+            <tr style="background-color: black; color: skyblue;">
+              <th colspan="2"> (Time Series) Representation
+          Bias </th>
+            </tr>
+            <tr style="background-color: lightgrey; color: black;font-size:14px;">
+              <td>Simple recurrent network (SRN) </td>
+              <td>Exponential trace (AR) score</td>
+            </tr>
+            <tr style="background-color: lightgrey; color: black;font-size:14px;">
+              <td>Time delay neural network (TDNN)</td>
+              <td>Moving average (MA) score </td>
+            </tr>
+            <tr style="background-color: lightgrey; color: black;font-size:14px;">
+              <td>Gamma network </td>
+              <td>Autoregressive moving average (ARMA) score</td>
+            </tr>
+            <tr style="background-color: white; color: black;font-size:14px;">
+              <td>Temporal naïve Bayesian network </td>
+              <td>Relevance score</td>
+            </tr>
+            <tr style="background-color: white; color: black;font-size:14px;">
+              <td>Hidden Markov model (HMM)</td>
+              <td>Test set perplexity</td>
+            </tr>
+          </table><br/>
+
+          <div class="p1">node (subnetwork) in the hierarchy, corresponding to a single set within an attribute
+            partition. The choice of hierarchical model is global over the partition, and the
+            corresponding metrics are therefore called representation metrics. Note that this set may
+            be an abstraction, or “merge,” of the lowest-level partition used, and is likely to be a
+            refinement, or “split,” of the top-level (unpartitioned) set. The metrics are called
+            prescriptive because each one provides evidence in favor of a particular architecture.
+            </div>
+            <p>The design rationale is that each metric is based on an attribute chosen to correlate
+                 positively (and, to the extent feasible, uniquely) with the characteristic memory form 
+                 of a time series. A memory form as defined by Mozer (1994) is the representation of some
+                  specific temporal pattern, such as a limited-depth buffer, exponential trace, gamma
+                   memory (Principé & Lefebvre, 2001), or state transition model.</p>
+
+<p>To model a time series as a stochastic process, one assumes that there is some mechanism that 
+    generates a random variable at each point in time. The random variables X(t) can be univariate
+     or multivariate (corresponding to single and multiple attributes or channels of input per 
+     exemplar) and can take discrete or continuous values, and time can be either discrete or
+      continuous. For clarity of exposition, the experiments focus on discrete classification
+       problems with discrete time. The classification model is generalized linear regression
+        (Neal, 1996), also known as a 1-of-C coding (Sarle, 2002), or local coding (Kohavi & 
+        John, 1997).</p>
+
+<p>Following the parameter estimation literature (Duda et al., 2000), time series learning can be 
+    defined as finding the parameters &#920;= {&#952;1 , &#8230;, &#952;n } that describe the 
+    stochastic mechanism, typically by maximizing the likelihood that a set of realized or
+     observable values, {x(t 1 ), x(t 2 ), &#8230;, x(t k )}, were actually generated by that mechanism.
+      This corresponds to the backward, or maximization, step in the expectation-maximization (EM) algorithm
+       (Duda et al., 2000). Forecasting with time series is accomplished by calculating the conditional density 
+       P(X(t){&#920;, {X(t - 1), &#8230;, X(t - m)}}), when the stochastic mechanism and the parameters have been
+        identified by the observable values {x(t)}. The order m of the stochastic mechanism can, in some cases, be
+         infinite; in this case, one can only approximate the conditional density.</p>
+
+         <p>Despite recent developments with nonlinear models, some of the most common
+            stochastic models used in time series learning are parametric linear models called
+            <i>autoregressive (AR), moving average (MA), and autoregressive moving average
+            (ARMA) processes.</i></p>
+
+            <p>
+                MA or moving average processes are the most straightforward to understand. First,
+                let {<i>Z(t)</i>} be some fixed zero-mean, unit-variance “white noise” or “purely random”
+                process (i.e., one for which <i> Cov</i>[<i>Z(t<sub>i</sub>), Z(t<sub>j</sub></i>)] = 1 <i>iff t<sub>i</sub> = t<sub>j</sub>,</i> 0 otherwise). <i>X(t)</i> is an<i> MA(q)</i> process, or “moving average process of order q,” if
+              <i>  X(t) = &sum;<sub>&tau;=0</sub><sup>q</sup> &beta;<sub>&tau;</sub> Z(t-&tau;),</i>
+                where the<i> &beta;<sub>τ</sub> </i>are constants.
+                It follows that <i>E</i>[<i>X(t)</i>] = 0 and <i>Var</i>[<i>X(t)</i>] = &sum;<sub>&tau;=0</sub><sup>q</sup> &beta;<sub>&tau;</sub>. Moving average processes are
+              </p>
+              
+        <p style="text-align: right;">pg.no: 15</p><br/>
+    </div>
+  </div>
+  <!----------------next page ---------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+
+    <div class="p1">used to capture “exponential traces” in a time series (Mehrotra et al., 1997; Mozer, 1994;
+        Principé & Lefebvre, 2001). For example, input recurrent neural networks (Ray & Hsu,
+        1998) are a restricted form of nonlinear MA process model.</div>
+
+        <p>AR or autoregressive processes are processes in which the 
+            values at time t depend linearly on the values at previous
+         times. With {Z(t)} as defined above, X(t) is an AR(p) process,
+          or &ldquo;autoregressive process of order p&rdquo;, if 
+          &sum;&alpha;<sub> &upsilon;</sub> X(t-&upsilon;)= Z(t),where 
+          the &alpha;<sub>&upsilon;</sub> are constants. In this case, 
+          E[X(t)] X(t)= 0 , but the calculation of Var[X(t)] depends upon
+           the relationship among the &alpha;<sub>&upsilon;</sub> ; in 
+           general, if |&alpha;<sub>&upsilon;</sub>| &ge;1 , then X(t) 
+           will quickly diverge. Autoregressive processes are often used 
+           to describe stochastic mechanisms that have a finite,
+            short-term, linear &ldquo;memory&rdquo;; they are equivalent
+             to infinite-length MA processes constants. Both Jordan
+              recurrent neural networks (Mozer, 1994) and time-delay 
+              neural networks (Lang, Waibel, &amp; Hinton., 1990), also 
+              known as tapped delay-line neural networks or TDNNs, are
+               a restricted form of nonlinear AR process model (Mehrotra et al., 1997, Princip&eacute; &amp; Lefebvre, 2001).</p>
+
+               <p>
+                ARMA is a straightforward combination of AR and MA processes. With the above
+                definitions, an ARMA(p, q) process is a stochastic process X(t) in which
+                &sum;<sub>&upsilon;=0</sub><sup>p</sup> &alpha;<sub>&upsilon;</sub>  X(t-&upsilon;)=&sum;<sub>&tau;=0</sub><sup>q</sup> &beta;<sub> &tau;</sub> Z(t-&tau;),
+                where the {&alpha;<sub>&upsilon;</sub>, &beta;<sub>&tau;</sub>}, are constants (Mozer, 1994). Because it can
+                be shown that AR and MA are of equal expressive power, that is, because they can both
+                represent the same linear stochastic processes, possibly with infinite p or q (Box et al.,
+                1994), ARMA model selection and parameter fitting should be done with specific criteria
+                in mind. For example, it is typically appropriate to balance the roles of the AR(p) and
+                MA(q), and to limit p and q to small constant values (typically 4 or 5) for tractability (Box
+                et al., 1994; Principé & Lefebvre, 2001). The Gamma memory (Principé & deVries, 1992;
+                Principé & Lefebvre, 2001) is a restricted, nonlinear ARMA process model with a neural
+                network architecture and learning rules.
+            </p>
+            <p>In heterogeneous time series, the embedded temporal patterns belong to different
+                categories of statistical models, such as MA(1) and AR(1). Examples of such embedded
+                processes are presented in the discussion of the experimental test beds. A multichannel
+                time series learning problem can be decomposed into homogeneous subtasks by
+                aggregation or synthesis of attributes. Aggregation occurs in multimodal sensor fusion
+                (e.g., for medical, industrial, and military monitoring), where each group of input
+                attributes represents the bands of information available to a sensor (Stein & Meredith,
+                1993). In geospatial data mining, these groupings may be topographic. Complex
+                attributes may be synthesized explicitly by constructive induction, as in causal discovery
+                of latent (hidden) variables (Heckerman, 1996); or implicitly by preprocessing transforms
+                (Haykin, 1999; Mehrotra et al., 1997; Ray & Hsu, 1998).</p>
+
+                <div class="p1">Control of Preference Bias: A Data Fusion Example</div>
+
+                <p>The learning methods being evaluated define the hierarchical model used to perform
+    multi-strategy learning in the integrated, or composite, learning system. Examples of
+    these are listed in Table 2. Continuing research (Hsu, 1998) also considers the training
+    algorithm to use but is beyond the scope of this chapter. This section presents the</p>
+
+
+        <p style="text-align: right;">pg.no: 16</p><br/>
+    </div>
+  </div>
+  <!-----------------------------------------next page------------------------->
+  <div class="section">
+    <div class="content-container">
+    <div class="p1">metrics for preference bias (the combiner type) and presents hierarchical models for
+        classifier fusion in greater detail.</div>
+
+        <p>The expected performance of a hierarchical model is a holistic measurement; that
+            is, it involves all of the subproblem definitions, the learning architecture used for each
+            one, and even the training algorithm used. It must therefore take into account at least
+            the subproblem definitions. Hence, the metrics used to select a hierarchical model are
+            referred to as preference metrics. Preference metrics in this case are designed to evaluate
+            only the subproblem definitions. This criterion has three benefits: first, it is consistent
+            with the holistic function of hierarchical models; second, it is minimally complex, in that
+            it omits less relevant issues such as the learning architecture for each subproblem from
+            consideration; and third, it measures the quality of an attribute partition. The third
+            property is very useful in heuristic search over attribute partitions; the tree metric can
+            thus serve double duty as an evaluation function for a partition (given a hierarchical
+            model to be used) and for mixture model (given a partitioned data set). As a convention,
+            the choice of partition is committed first; next, the hierarchical model type; then, the
+            learning architectures for each subset, with each selection being made subject to the
+            previous choices.</p>
+        
+            <p>The preference metric for specialist-moderator networks is the factorization score.
+            The interested reader is referred to Hsu (1998) and Hsu et al. (2000).</p>
+
+            <i><div class="p1" style="font-size: medium;"> Hierarchical Mixture of Experts (MS-HME) Network</div></i>
+            <p>The tree metric for HME-type networks is the modular mutual information score.
+                This score measures mutual information across subsets of a partition. It is directly
+                proportional to the conditional mutual information of the desired output given each
+                subset by itself (i.e., the mutual information between one subset and the target class,
+                given all other subsets). It is inversely proportional to the difference between joint and
+                total conditional mutual information (i.e., shared information among all subsets). Let the
+                first quantity be denoted I<sub>i</sub> for each subset a<sub>i</sub>, and the second quantity as ∇I for an entire
+                partition.</p>
+            
+                <p>The mutual information between discrete random variables X and Y is defined
+                (Cover & Thomas, 1991) as the Kullback-Leibler distance between joint and product
+                distributions.</p>
+
+<img src="images/page%2017%20formula%201.jpg" style="height: 20%;width: 70%;"><br/><br/>
+                <!--------------page 17 formula 1------------->
+
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+            
+                    th, td {
+                        border: 1px solid black;
+                        padding: 8px;
+                        text-align: center;
+                    }
+            
+                    thead {
+                        background-color: black;
+                        color: lightgreen;
+                        font-size: 15px;
+                    }
+            
+                    tbody {
+                        background-color: lightgrey;
+                        color: black;
+                        font-size: 14px;
+                    }
+                </style>
+           
+            <table>
+                <thead>
+                    <tr>
+                        <th>Preference Bias (Combiner Type) </th>
+                        <th>Preference Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Specialist-Moderator (SM) Network </td>
+                        <td>Factorization score</td>
+                    </tr>
+                    <tr>
+                        <td>Multi-strategy Hierarchical Mixture of
+            Experts (MS-HME) Network</td>
+                        <td>Modular mutual information score</td>
+                    </tr>
+                </tbody>
+            </table><br/><br/>
+
+
+                <i><div class="p1">Table 2: Hierarchical committee machines (combiners) and their prescriptive metrics</div></i><br/><br/>
+        <p style="text-align: right;">pg.no: 17</p><br/>
+    </div>
+  </div>
+<!----------------------next page -------------------------------------->
+
+<div class="section">
+    <div class="content-container"><br/>
+
+        <p>The conditional mutual information of X and Y given Z is defined (Cover & Thomas,
+            1991) as the change in conditional entropy when the value of Z is known:</p>
+<img src="images/page%2018%20formula%201.jpg"style="height: 10%;width: 70%"><br/><br/>
+
+            <!-----------page 18 formula 1-------------->
+            <p>The common information of X, Y, and Z (the analogue of k-way intersection in set
+                theory, except that it can have negative value) can now be defined:</p>
+
+<img src="images/page%2018%20formula%202.jpg" style="height: 20%;width: 70%"><br/><br/>
+<!------------------------page 18 formula 2--------------->
+
+<p>The idea behind the modular mutual information score is that it should reward high
+    conditional mutual information between an attribute subset and the desired output given
+    other subsets (i.e., each expert subnetwork will be allotted a large share of the work). It
+    should also penalize high common information (i.e., the gating network is allotted more
+    work relative to the experts). Given these dicta, we can define the modular mutual
+    information for a partition as follows:</p>
+        
+        <img src="images/page%2018%20formula%203.jpg" style="height: 25%;width: 70%"><br/><br/>
+
+    <!-------------------page 18 formula 3--------------------->
+
+
+    <p>which leads to the definition of<i> I<sub>i</sub></i>
+    (modular mutual information) and <i>I<sub>∇</sub></i> (modular common
+       information):</p>
+
+
+
+        <p style="text-align: right;">pg.no: 18</p><br/>
+    </div>
+  </div>
+
+  <!-------------------------next page ---------------------------------->
+  <div class="section">
+    <div class="content-container">
+
+        <img src="images/page%2019%20formula%201.jpg" style="height: 20%; width: 50%"><br/><br/>
+        
+        <!-----------------------------page 19 formula 1------->
+        <p>Because the desired metric rewards high <i>I<sub>i</sub></i>
+            and penalizes high<i> I<sub>∇</sub></i> , we can define:</p>
+        
+        <img src="images/page%2019%20formula%202.jpg" style="height: 20%;width: 50%"><br/><br/>
+        
+        <!---------------------------------page 19 formula 2--->
+
+        <b><h3>Model Selection and Composite Learning</h3></b>
+
+        <p>As explained in the introduction, being able to decompose a learning problem into
+            simpler subproblems still leaves the task of mapping each to its appropriate model – the
+            hypothesis language or representation bias (Mitchell, 1997; Witten &amp; Frank, 2000). In
+            the above methodology section, we have just formulated a rationale for using quantitative metrics to accumulate evidence in favor of particular models. This leads to the design
+            presented here, a metric-based selection system for time series learning architectures
+            and general learning methods. Next, we have studied specific time series learning
+            architectures that populate part of a collection of model components, along with the
+            metrics that correspond to each. We then addressed the problem of determining a
+            preference bias (data fusion algorithm) for multi-strategy learning by examining two
+            hierarchical mixture models to see how they can be converted into classifier fusion
+            models that also populate this collection. Finally, we surveyed metrics that correspond
+            to each.</p>
+        
+            <p>I pause to justify this coarse-grained approach to model selection. As earlier
+            defined, model selection is the problem of choosing a hypothesis class that has the
+            appropriate complexity for the given training data (Hjorth, 1994; Schuurmans, 1997;
+            Stone, 1977). Quantitative or metric-based methods for model selection have previously
+            been used to learn using highly flexible models with many degrees of freedom (Schuurmans,
+            1997), but with no particular assumptions on the structure of decision surfaces, e.g., that
+            they are linear or quadratic (Geman et al., 1992). Learning without this characterization.</p>
+
+
+        <p style="text-align: right;">pg.no: 19</p><br/>
+    </div>
+  </div>
+<!---------------------next page -------------------------------->
+
+
+<div class="section">
+    <div class="content-container">
+
+        <div class="p1">is known in the statistics literature as model-free estimation or nonparametric statistical
+            inference. A premise of this chapter is that, for learning from heterogeneous time series,
+            indiscriminate use of such models is too unmanageable. This is especially true in
+            diagnostic monitoring applications such as crisis monitoring, because decision surfaces
+            are more sensitive to error when the target concept is a catastrophic event (Hsu et al.,
+            1998).</div>
+
+            <p>The purpose of using model selection in decomposable learning problems is to fit
+                a suitable hypothesis language (model) to each subproblem (Engels, Verdenius, &
+                Aha,1998). A subproblem is defined in terms of a subset of the input and an intermediate
+                concept, formed by unsupervised learning from that subset. Selecting a model entails
+                three tasks. The first is finding partitions that are consistent enough to admit at most
+                one “suitable” model per subset. The second is building a collection of models that is
+                flexible enough so that some partition can have at least one model matched to each of
+                its subsets. The third is to derive a principled quantitative system for model evaluation
+                so that exactly one model can be correctly chosen per subset of the acceptable partition
+                or partitions. These tasks indicate that a model selection system at the level of
+                subproblem definition is desirable, because this corresponds to the granularity of
+                problem decomposition, the design choices for the collection of models, and the
+                evaluation function. This is a more comprehensive optimization problem than traditional
+                model selection typically adopts (Geman et al., 1992; Hjorth, 1994), but it is also
+                approached from a less precise perspective, hence the term coarse-grained.</p>
+
+                <b><h2>RESULTS</h2></b>
+                <b><h3>Synthetic and Small-Scale Data Mining Problems</h3></b>
+<p>This section presents experimental results with comparisons to existing inductive
+    learning systems (Kohavi, Sommerfield & Dougherty, 1996): decision trees, traditional
+    regression-based methods as adapted to time series prediction, and non-modular
+    probabilistic networks (both atemporal and ARIMA-type ANNs).</p>
+
+    <b><h3>The Modular Parity Problem</h3></b>
+
+    <p>e Modular Parity Problem
+        Figure 3 shows the classification accuracy in percent for specialist and moderator
+        output for the concept:
+        </p>
+        
+        
+<img src="images/page%2020%20formula%201.jpg" style="height: 25%;width: 60%"><br/><br/>
+        <!--------------page 20 formula1-------->
+
+
+        <p style="text-align: right;">pg.no: 20</p><br/>
+    </div>
+  </div>
+  <!----------------------------------------next page-------------------------------->
+  
+<div class="section">
+    <div class="content-container">
+
+        <p>All mixture models are trained using 24 hidden units, distributed across all specialists and moderators. When used as a heuristic evaluation function for partition search,
+            the HME metric documented in the previous section finds the best partition for the 5-
+            attribute problem (shown below) as well as 6, 7, and 8, with no backtracking, and indicates
+            that an MS-HME model should be used.</p>
+        
+            <p>This section documents improvements in classification accuracy as achieved by
+            attribute partitioning. Figure 3 shows how the optimum partition {{1,2,3}{4,5}} for the
+            concept:
+            parity(x1, x2, x3) × parity(x4, x5)
+            achieves the best specialist performance for any size-2 partition.</p>
+        
+            <p>Figure 3 shows how this allows it to achieve the best moderator performance overall.
+            Empirically, “good splits” – especially descendants and ancestors of the optimal one, i.e.,
+            members of its schema (Goldberg, 1989) – tend to perform well.</p>
+        
+            <p>As documented in the background section, partition search is able to find Partition #16,
+            {{1,2,3}{4,5}} (the optimum partition) after expanding all of the 2-subset partitions. This
+            reduces Bn evaluations to Θ(2n); attribute partitioning therefore remains an intractable
+            problem, but is more feasible for small to moderate numbers of attributes (30-40 can be handled
+            by high-performance computers, instead of 15-20 using exhaustive search). Approximation
+            algorithms for polynomial-time evaluation (Cormen et al., 2001) are currently being investigated by the author.</p>
+        
+            <p>For experiments using specialist-moderator networks on a musical tune classification problem – synthetic data quantized from real-world audio recordings – the interested
+            reader is referred to Hsu et al. (2000).</p>
+
+            <b><h3>Application: Crop Condition Monitoring</h3></b>
+
+            <p>Figure 4 visualizes a heterogeneous time series. The lines shown are phased
+                autocorrelograms, or plots of autocorrelation shifted in time, for (subjective) weekly
+                crop condition estimates, averaged from 1985-1995 for the state of Illinois. Each point
+                represents the correlation between one week’s mean estimate and the mean estimate for
+                a subsequent week. Each line contains the correlation between values for a particular</p>
+
+            <div class="p1">Figure 3: Mean classification accuracy of specialists vs. moderators for all (52)
+                partitions of 5-attribute modular parity problem.</div><br/><br/>
+        
+        <img src="images/page%2021%20image%201.jpg" style="width: 90%;"><br/><br/>
+
+<!-----------------------------page 21 image 1-------------------->
+        <p style="text-align: right;">pg.no: 21</p><br/>
+    </div>
+  </div>
+  <!---------------------------------next page---------------------------->
+
+  <div class="section">
+    <div class="content-container">
+
+        <div class="p1">week and all subsequent weeks. The data is heterogeneous because it contains both an
+            autoregressive pattern (the linear increments in autocorrelation for the first ten weeks)
+            and a moving average pattern (the larger, unevenly spaced increments from 0.4 to about
+            0.95 in the rightmost column). The autoregressive process, which can be represented by
+            a time-delay model, expresses weather “memory” (correlating early and late drought); the
+            moving average process, which can be represented by an exponential trace model,
+            physiological damage from drought. Task decomposition can improve performance here
+            by isolating the AR and MA components for identification and application of the correct
+            specialized architecture – a time delay neural network (Haykin, 1999; Lang et al., 1990)
+            or simple recurrent network (Principé & Lefebvre, 2001), respectively.</div>
+
+
+            <p>We applied a simple mixture model to reduce variance in ANN-based classifiers. A
+                paired t-test with 10 degrees of freedom (for 11-year cross-validation over the weekly
+                predictions) indicates significance at the level of p &lt; 0.004 for the moderator versus TDNN
+                and at the level of p &lt; 0.0002 for the moderator versus IR. The null hypothesis is rejected
+                at the 95% level of confidence for TDNN outperforming IR (p &lt; 0.09), which is consistent
+                with the hypothesis that an MS-HME network yields a performance boost over either
+                network type alone. This result, however, is based on relatively few samples (in terms
+                of weeks per year) and very coarse spatial granularity (statewide averages).</p>
+            
+                <p>Table 3 summarizes the performance of an MS-HME network versus that of other
+                induction algorithms from MLC++ (Kohavi et al., 1996) on the crop condition monitoring
+                problem. This experiment illustrates the usefulness of learning task decomposition over
+                heterogeneous time series. The improved learning results due to application of multiple
+                models (TDNN and IR specialists) and a mixture model (the Gamma network moderator).
+                Reports from the literature on common statistical models for time series (Box et al., 1994;
+                Gershenfeld &amp; Weigend, 1994; Neal, 1996) and experience with the (highly heteroge</p>
+    
+<div class="p1">
+    Figure 4: Phased autocorrelogram (plot of autocorrelation shifted over time) for crop
+condition (average quantized estimates).
+</div><br/><br/>
+        
+        <img src="images/page%2022%20image%201.jpg" style="width: 90%;"><br/><br/>
+
+<!-----------------page 22 image 1--------------------->
+
+        <p style="text-align: right;">pg.no: 22</p><br/>
+    </div>
+  </div>
+<!-------------------------------next page-------------------------------->
+
+<div class="section">
+    <div class="content-container">
+
+     <div class="p1">neous) test bed domains documented here bears out the idea that “fitting the right tool
+        to each job” is critical.</div>   <br/><br/>
+        <b><h3>Application: Loss Ratio Prediction in Automobile
+            Insurance Pricing</h3></b>
+<p>Table 4 summarizes the performance of the ID3 decision tree induction algorithm
+    and the state-space search-based feature subset selection (FSS) wrapper in MLC++
+    (Kohavi et al., 1996) compared to that of a genetic wrapper for feature selection. This
+    system is documented in detail in Hsu, Welge, Redman, and Clutter (2002). We used a
+    version of ALLVAR-2, a data set for decision support in automobile insurance policy
+    pricing. This data set was used for clustering and classification and initially contained
+    471-attribute record for each of over 300,000 automobile insurance policies, with five bins
+    of loss ratio as a prediction target. Wall clock time for the Jenesis and FSS-ID3 wrappers
+    was comparable. As the table shows, both the Jenesis wrapper and the MLC++ wrapper
+    (using ID3 as the wrapped inducer) produce significant improvements over unwrapped
+    ID3 in classification accuracy and very large reductions in the number of attributes used.
+    The test set accuracy and the number of selected attributes are averaged over five cross
+    validation folds (70 aggregate test cases each). Results for data sets from the Irvine
+    database repository that are known to contain irrelevant attributes are also positive.
+    Table 10 presents more descriptive statistics on the five-way cross-validated performance of ID3, FSS-ID3 (the MLC++ implementation of ID3 with its feature subset
+    selection wrapper), and Jenesis. Severe overfitting is quite evident for ID3, based on the</p>
+        
+<div class="p1">Table 3: Performance of a HME-type mixture model compared with compared with that
+    of other inducers on the crop condition monitoring problem
+    </div><br/><br/>
+        <img src="images/page%2023%20image%201.jpg" style="width: 90%;"><br/><br/>
+
+    <!---------------------------page 23 image 1----------->
+
+
+
+
+        <p style="text-align: right;">pg.no: 23</p><br/>
+    </div>
+  </div>
+<!----------------------next page----------------------------------------->
+<div class="section">
+    <div class="content-container">
+        <div class="p1">difference between training and test set error (perfect purity is achieved in all five folds)
+            and the larger number of attributes actually used compared to the wrappers. Jenesis and
+            FSS-ID3 perform comparably in terms of test set error, though FSS-ID3 has less
+            difference between training and test set error. and Jenesis is less likely to overprune the
+            attribute subset. Note that FSS-ID3 consistently selects the fewest attributes, but still
+            overfits (Jenesis achieves lower test set error in three of five cross validation cases). The
+            test set errors of Jenesis and FSS-ID3 are not significantly different, so generalization
+            quality is not conclusively distinguishable in this case. We note, however, that
+            excessively shrinking the subset indicates a significant tradeoff regarding generalization
+            quality. The classification model was used to audit an existing rule-based classification
+            system over the same instance space, and to calibrate an underwriting model (to guide
+            pricing decisions for policies) for an experimental market.</div>
+<p>We have observed that the aggregation method scales well across lines of business
+    (the indemnity and non-indemnity companies) and states. This was demonstrated using
+    many of our decision tree experiments and visualizations using ALLVAR-2 samples and
+    subsamples by state.</p>
+
+    <b><h2>ACKNOWLEDGMENTS</h2></b>
+    <p>Support for this research was provided in part by the Army Research Lab under
+        grant ARL-PET-IMT-KSU-07, by the Office of Naval Research under grant N00014-01-
+        1-0519, and by the Naval Research Laboratory under grant N00014-97-C-2061. The author
+        thanks Nathan D. Gettings for helpful discussions on data fusion and time series analysis
+        and an anonymous reviewer for comments on background material. Thanks also to David
+        Clutter, Matt A. Durst, Nathan D. Gettings, James A. Louis, Yuching Ni, Yu Pan, Mike
+        Perry, James W. Plummer, Victoria E. Lease, Tom Redman, Cecil P. Schmidt, and Kris
+        Wuollett for implementations of software components of the system described in this
+        chapter.
+        </p>
+        <div class="p1">Table 4: Results from Jenesis for One Company (5-way cross validation), representative
+            data sets</div><br/><br/>
+            
+        <img src="images/page%2024%20image%201.jpg" style="width: 90%;"><br/><br/>
+            <!----------------page 24 image 1------------------------------------------------->
+
+
+
+        <p style="text-align: right;">pg.no: 24</p><br/>
+    </div>
+  </div>
+  <!------------------------------next page----------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+        <b><h2>ENDNOTES</h2></b>
+
+        <ol style="padding-left: 25px;">
+            <li>
+                <div class="p1">S is a recurrence known as the Stirling Triangle of the Second Kind. It counts the number of partitions of an n-set into k classes (Bogart, 1990).</div>
+            </li><br/>
+            <li>
+                <div class="p1">This idea is based upon suggestions by Michael I. Jordan.</div>
+            </li>
+        </ol>
+        
+
+        <b><h2>REFERENCES</h2></b>
+
+        <div class="p1"><cite>Benjamin, D. P. (ed.) (1990).</cite> Change of representation and inductive bias. Norwell, MA: Kluwer Academic Publishers.</div><br/>
+        <div class="p1"><cite>Bogart, K. P. (1990).</cite> Introductory combinatorics, 2nd Ed. Orlando, FL: Harcourt.</div><br/>
+        <div class="p1"><cite>Booker, L. B., Goldberg, D. E., &amp; Holland, J. H. (1989).</cite> Classifier systems and genetic algorithms. <em>Artificial Intelligence, 40,</em> 235-282.</div><br/>
+        <div class="p1"><cite>Box, G. E. P., Jenkins, G. M., &amp; Reinsel, G. C. (1994).</cite> Time series analysis, forecasting, and control (3rd ed.). San Francisco, CA: Holden-Day.</div><br/>
+        <div class="p1"><cite>Breiman, L. (1996)</cite> Bagging predictors. <em>Machine Learning, 24,</em> 123-140.</div><br/>
+        <div class="p1"><cite>Brooks, F. P. (1995).</cite> The mythical-man month, Anniversary edition: Essays on software engineering. Reading, MA: AddisonWesley.</div><br/>
+        <div class="p1"><cite>Cantu-Paz, E. (1999).</cite> Designing efficient and accurate parallel genetic algorithms. Ph.D. thesis, University of Illinois at Urbana-Champaign. Technical report, Illinois Genetic Algorithms Laboratory (IlliGAL).</div><br/>
+        <div class="p1"><cite>Cormen, T. H., Leiserson, C. E., Rivest, R. L., &amp; Stern, C. (2001).</cite> Introduction to algorithms, 2nd edition. Cambridge, MA: MIT Press.</div><br/>
+        <div class="p1"><cite>Cover, T. M. &amp; Thomas, J. A. (1991).</cite> Elements of iInformation theory. New York: John Wiley &amp; Sons.</div><br/>
+        <div class="p1"><cite>DeJong, K. A., Spears, W. M., &amp; Gordon, D. F. (1993).</cite> Using genetic algorithms for concept learning. <em>Machine Learning, 13,</em> 161-188.</div><br/>
+        <div class="p1"><cite>Donoho, S. K. (1996).</cite> Knowledge-guided constructive induction. Ph.D. thesis, Department of Computer Science, University of Illinois at Urbana-Champaign.</div><br/>
+        <div class="p1"><cite>Duda, R. O., Hart, P. E., &amp; Stork, D. (2000).</cite> Pattern classification, 2nd ed. New York: John Wiley &amp; Sons.</div><br/>
+        <div class="p1"><cite>Engels, R., Verdenius, F., &amp; Aha, D. (1998).</cite> Proceedings of the 1998 Joint AAAI-ICML Workshop on the Methodology of Applying Machine Learning (Technical Report WS-98-16). Menlo Park, CA: AAAI Press.</div><br/>
+        <div class="p1"><cite>Freund, Y. &amp; Schapire, R. E. (1996).</cite> Experiments with a new boosting Algorithm. In Proceedings of the 13th International Conference on Machine Learning, pp. 148-156. San Mateo, CA: Morgan Kaufmann.</div><br/>
+        <div class="p1"><cite>Fu, L.-M. &amp; Buchanan, B. G. (1985).</cite> Learning intermediate concepts in constructing a hierarchical knowledge base. In Proceedings of the International Joint Conference on Artificial Intelligence (IJCAI-85), pp. 659-666, Los Angeles, CA.</div><br/>
+        <div class="p1"><cite>Gaba, D. M., Fish, K. J., &amp; Howard, S. K. (1994).</cite> Crisis management in anesthesiology. New York: Churchill Livingstone.</div><br/>
+        <div class="p1"><cite>Geman, S., Bienenstock, E., &amp; Doursat, R. (1992).</cite> Neural networks and the bias/variance dilemma. <em>Neural Computation, 4,</em> 1-58.</div><br/>
+        <div class="p1"><cite>Gershenfeld, N. A. &amp; Weigend, A. S. (eds). (1994).</cite> The future of time series: Learning and...</div><br/>
+        
+
+        <p style="text-align: right;">pg.no: 25</p><br/>
+    </div>
+  </div>
+  <!---------------------------next page------------------------------------------------------------------------------>
+  <div class="section">
+    <div class="content-container">
+
+        <div class="p1"><cite>understanding. In Time Series Prediction: Forecasting the Future and Understanding the Past (Santa Fe Institute Studies in the Sciences of Complexity XV).
+            Reading, MA: AddisonWesley.</cite></div><br/>
+            <div class="p1"><cite>Goldberg, D. E. (1989).</cite> Genetic algorithms in search, optimization, and machine learning. Reading, MA: AddisonWesley.</div><br/>
+            <div class="p1"><cite>Goldberg, D. E. (1998).</cite> The race, The hurdle, and The sweet spot: Lessons from genetic algorithms for the automation of design innovation andcreativity. Technical report, Illinois Genetic Algorithms Laboratory (IlliGAL).</div><br/>
+            <div class="p1"><cite>Grois, E., Hsu, W. H., Voloshin, M., & Wilkins, D. C. (1998).</cite> Bayesian network models for generation of crisis management training scenarios. In Proceedings of IAAI98. Menlo Park, CA: AAAI Press, pp. 1113-1120.</div><br/>
+            <div class="p1"><cite>Harik, G. & Lobo, F. (1997).</cite> A parameter-less genetic algorithm. Technical report, Illinois Genetic Algorithms Laboratory (IlliGAL).</div><br/>
+            <div class="p1"><cite>Hassoun, M. H. (1995).</cite> Fundamentals of artificial neural networks. Cambridge, MA: MIT Press.</div><br/>
+            <div class="p1"><cite>Hayes-Roth, B., Larsson, J. E., Brownston, L., Gaba, D., & Flanagan, B. (1996).</cite> Guardian Project home page, URL: http://www-ksl.stanford.edu/projects/guardian/.</div><br/>
+            <div class="p1"><cite>Haykin, S. (1999).</cite> Neural networks: A comprehensive foundation, 2nd ed. Englewood Cliffs, NJ: Prentice Hall.</div><br/>
+            <div class="p1"><cite>Heckerman, D. A. (1991).</cite> Probabilistic similarity networks. Cambridge, MA: MIT Press.</div><br/>
+            <div class="p1"><cite>Heckerman, D. A. (1996).</cite> A tutorial on learning with Bayesian networks. Microsoft Research Technical Report 95-06, revised June 1996.</div><br/>
+            <div class="p1"><cite>Hjorth, J. S. U. (1994).</cite> Computer intensive statistical methods: Validation, model selection and nootstrap. London: Chapman and Hall.</div><br/>
+            <div class="p1"><cite>Horn, J. (1997).</cite> The nature of niching: Genetic algorithms and the evolution of optimal, cooperative populations. Ph.D. thesis, University of Illinois at Urbana-Champaign. Technical report, Illinois Genetic Algorithms Laboratory (IlliGAL).</div><br/>
+            <div class="p1"><cite>Horvitz, E. & Barry, M. (1995).</cite> Display of information for time-critical decision making. In Proceedings of the 11th International Conference on Uncertainty in Artificial Intelligence (UAI-95). San Mateo, CA: Morgan-Kaufmann, pp. 296-305.</div><br/>
+            <div class="p1"><cite>Hsu, W. H. (1998).</cite> Time series learning with probabilistic network composites. Ph.D. thesis, University of Illinois at Urbana-Champaign. Technical Report UIUC-DCSR2063. URL: http://www.kddresearch.org/Publications/Theses/PhD/Hsu.</div><br/>
+            <div class="p1"><cite>Hsu, W. H., Gettings, N. D., Lease, V. E., Pan, Y., & Wilkins, D. C. (1998).</cite> A new approach to multi-strategy learning from heterogeneous time series. In Proceedings of the International Workshop on Multi-strategy Learning, Milan, Italy, June.</div><br/>
+            <div class="p1"><cite>Hsu, W. H., Ray, S. R., & Wilkins, D. C. (2000).</cite> A multi-strategy approach to classifier learning from time series. <em>Machine Learning, 38,</em> 213-236.</div><br/>
+            <div class="p1"><cite>Hsu, W. H., Welge, M., Redman, T., & Clutter, D. (2002).</cite> Constructive induction wrappers in high-performance commercial data mining and decision support systems. <em>Data Mining and Knowledge Discovery, 6(4)</em>: 361-391, October.</div><br/>
+            <div class="p1"><cite>Jordan, M. I., & Jacobs, R. A. (1994).</cite> Hierarchical mixtures of wxperts and the EM algorithm. <em>Neural Computation, 6,</em> 181-214.</div><br/>
+            <div class="p1"><cite>Kohavi, R. & John, G. H. (1997).</cite> Wrappers for feature subset selection. <em>Artificial Intelligence, Special Issue on Relevance, 97(1-2),</em> 273-324.</div><br/>
+            <div class="p1"><cite>Kohavi, R., Sommerfield, D., & Dougherty, J. (1996).</cite> Data mining using MLC++: A</div><br/>
+                       
+            
+        <p style="text-align: right;">pg.no: 26</p><br/>
+    </div>
+  </div>
+  <!---------------------------------------next page---------------------------------------------------------------------->
+  <div class="section">
+    <div class="content-container">
+
+        <div class="p1">Machine learning library in C++. In <em>Tools with Artificial Intelligence,</em> p. 234-245. Rockville, MD: IEEE Computer Society PressURL: <a href="http://www.sgi.com/Technology/mlc">http://www.sgi.com/Technology/mlc</a>.</div><br/>
+<div class="p1"><cite>Kohonen, T. (1990).</cite> The self-organizing map. In <em>Proceedings of the IEEE,</em> 78:1464-1480.</div><br/>
+<div class="p1"><cite>Koza, J. R. (1992).</cite> Genetic programming. Cambridge, MA: MIT Press.</div><br/>
+<div class="p1"><cite>Lang, K. J., Waibel, A. H., & Hinton, G. E. (1990).</cite> A time-delay neural network architecture for isolated word recognition. <em>Neural Networks, 3,</em> 23-43.</div><br/>
+<div class="p1"><cite>Lee, K.-F. (1989).</cite> Automatic speech recognition: The development of the SPHINX system. Norwell, MA: Kluwer Academic Publishers.</div><br/>
+<div class="p1"><cite>Li, T., Fang, L. & Li, K. Q-Q. (1993).</cite> Hierarchical classification and vector quantization with neural trees. <em>Neurocomputing, 5,</em> 119-139.</div><br/>
+<div class="p1"><cite>Lowe, D. (1995).</cite> Radial basis function networks. In M. A. Arbib (Ed.), <em>The handbook of brain theory and neural networks,</em> 779-782. Cambridge, MA: MIT Press.</div><br/>
+<div class="p1"><cite>Mehrotra, K., Mohan, C. K., & Ranka, S. (1997).</cite> Elements of artificial neural networks. Cambridge, MA: MIT Press.</div><br/>
+<div class="p1"><cite>Michalski, R. S. (1993).</cite> A theory and methodology of inductive learning. <em>Artificial Intelligence, 20(2),</em> 111-161. Reprinted in B. G. Buchanan, & D. C. Wilkins (Eds.), Readings in knowledge acquisition and learning,. San Mateo, CA: MorganKaufmann.</div><br/>
+<div class="p1"><cite>Michalski, R. S., &Stepp, R. E. (1983).</cite> Learning from observation: Conceptual clustering. In R.S. Michalski, J.G. Carbonell, J& Mitchell, T. M. (Eds.), <em>Machine learning: An artificial intelligence approach.</em> San Mateo, CA: Morgan Kaufmann.</div><br/>
+<div class="p1"><cite>Mitchell, T. M. (1997).</cite> Machine learning. New York: McGraw-Hill.</div><br/>
+<div class="p1"><cite>Mozer, M. C. (1994).</cite> Neural net architectures for temporal sequence processing. In A.S.Weigend. & N.A.Gershenfeld. (eds.), <em>Time series prediction: Forecasting the future and understanding the past (Santa Fe Institute Studies in the Sciences of Complexity XV).</em> Reading, MA: AddisonWesley.</div><br/>
+<div class="p1"><cite>Neal, R. M. (1996).</cite> Bayesian learning for neural networks. New York: Springer-Verlag.</div><br/>
+<div class="p1"><cite>Palmer, W. C. (1965).</cite> Meteorological drought. Research Paper Number 45, Office of Climatology, United States Weather Bureau.</div><br/>
+<div class="p1"><cite>Principé, J. & deVries, B. (1992).</cite> The Gamma model – A new neural net model for temporal processing. <em>Neural Networks, 5,</em> 565-576.</div><br/>
+<div class="p1"><cite>Principé, J. & Lefebvre, C. (2001).</cite> NeuroSolutions v4.0, Gainesville, FL: NeuroDimension. URL: <a href="http://www.nd.com">http://www.nd.com</a>.</div><br/>
+<div class="p1"><cite>Ray, S. R. & Hsu, W. H. (1998).</cite> Self-organized-expert modular network for classification of spatiotemporal sequences. <em>Journal of Intelligent Data Analysis, 2(4).</em></div><br/>
+<div class="p1"><cite>Resnick, P. & Varian, H. R. (1997).</cite> Recommender systems. <em>Communications of the ACM, 40(3)</em>:56-58.</div><br/>
+<div class="p1"><cite>Russell, S. & Norvig, P. (1995).</cite> Artificial intelligence: A modern approach. Englewood Cliffs, NJ: Prentice Hall.</div><br/>
+<div class="p1"><cite>Sarle, W. S. (ed.) (2002).</cite> Neural network FAQ.Periodic posting to the Usenet newsgroup comp.ai.neural-nets, URL: <a href="ftp://ftp.sas.com/pub/neural/FAQ.html">ftp://ftp.sas.com/pub/neural/FAQ.html</a>.</div><br/>
+<div class="p1"><cite>Schuurmans, D. (1997).</cite> A new metric-based approach to model selection. In Proceedings of the Fourteenth National Conference on Artificial Intelligence (AAAI-97), Providence, RI, 552-558. Menlo Park, CA: AAAI Press.</div><br/>
+<div class="p1"><cite>Stein, B. & Meredith, M. A. (1993).</cite> The merging of the senses. Cambridge, MA: MIT Press.</div><br/>
+
+
+             
+        <p style="text-align: right;">pg.no: 27</p><br/>
+    </div>
+  </div>
+<!---------------------------next page -------------------------------------------------------------------------->
+<div class="section">
+    <div class="content-container">
+
+        <div class="p1"><cite>Stone, M. (1997).</cite> An asymptotic equivalence of choice of models by cross-validation and Akaike’s criterion. <em>Journal of the Royal Statistical Society, Series B, 39,</em> 44-47.</div><br/>
+<div class="p1"><cite>Watanabe, S. (1985).</cite> Pattern recognition: Human and mechanical. New York: John Wiley and Sons.</div><br/>
+<div class="p1"><cite>Witten, I. H. & Frank, E. (2000).</cite> Data mining: Practical machine learning tools and techniques with Java implementations. San Mateo, CA: MorganKaufmann.</div><br/>
+<div class="p1"><cite>Wolpert, D. H. (1992).</cite> Stacked generalization. <em>Neural Networks, 5,</em> 241-259.</div><br/>
+
+<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+
+
+        <p style="text-align: right;">pg.no: 28</p><br/>
+    </div>
+  </div>
